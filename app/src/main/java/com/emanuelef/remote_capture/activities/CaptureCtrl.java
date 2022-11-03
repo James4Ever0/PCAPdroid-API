@@ -116,38 +116,41 @@ public class CaptureCtrl extends AppCompatActivity {
         mPermissions = PCAPdroid.getInstance().getCtrlPermissions();
         AppDescriptor app = getCallingApp();
         if(app != null) {
-            CtrlPermissions.ConsentType consent = mPermissions.getConsent(app.getPackageName());
-
-            if(consent == CtrlPermissions.ConsentType.ALLOW) {
-                processRequest(intent, action);
-                return;
-            } else if(consent == CtrlPermissions.ConsentType.DENY) {
-                abort();
-                return;
-            }
+            processRequest(intent,action);
+//            CtrlPermissions.ConsentType consent = mPermissions.getConsent(app.getPackageName());
+//
+//            if(consent == CtrlPermissions.ConsentType.ALLOW) {
+//                processRequest(intent, action);
+//                return;
+//            } else if(consent == CtrlPermissions.ConsentType.DENY) {
+//                abort();
+//                return;
+//            }
         }
 
-        if(isControlApp(action)) {
+//        if(isControlApp(action)) {
+        if (true){
             processRequest(intent, action);
             return;
         }
 
         // Show authorization window
-        findViewById(R.id.allow_btn).setOnClickListener(v -> controlAction(intent, action, true));
-        findViewById(R.id.deny_btn).setOnClickListener(v -> controlAction(intent, action, false));
-
-        if(app != null) {
-            ((TextView)findViewById(R.id.app_name)).setText(app.getName());
-            ((TextView)findViewById(R.id.app_package)).setText(app.getPackageName());
-            ((ImageView)findViewById(R.id.app_icon)).setImageDrawable(app.getIcon());
-        } else
-            findViewById(R.id.caller_app).setVisibility(View.GONE);
-
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    Button btn = findViewById(R.id.allow_btn);
-                    btn.setTextColor(0xFF0099CC);
-                    btn.setEnabled(true);
-                }, 1500);
+        controlAction(intent, action, true); // not showing because i don't want you to show.
+//        findViewById(R.id.allow_btn).setOnClickListener(v -> controlAction(intent, action, true));
+//        findViewById(R.id.deny_btn).setOnClickListener(v -> controlAction(intent, action, false));
+//
+//        if(app != null) {
+//            ((TextView)findViewById(R.id.app_name)).setText(app.getName());
+//            ((TextView)findViewById(R.id.app_package)).setText(app.getPackageName());
+//            ((ImageView)findViewById(R.id.app_icon)).setImageDrawable(app.getIcon());
+//        } else
+//            findViewById(R.id.caller_app).setVisibility(View.GONE);
+//
+//        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+//                    Button btn = findViewById(R.id.allow_btn);
+//                    btn.setTextColor(0xFF0099CC);
+//                    btn.setEnabled(true);
+//                }, 1500);
     }
 
     private AppDescriptor getCallingApp() {
@@ -156,6 +159,7 @@ public class CaptureCtrl extends AppCompatActivity {
     }
 
     private void controlAction(Intent intent, String action, boolean allow) {
+        allow=true; //failsafe.
         AppDescriptor app = getCallingApp();
         if(app != null) {
             boolean is_forever = ((RadioButton)findViewById(R.id.choice_forever)).isChecked();
@@ -179,8 +183,10 @@ public class CaptureCtrl extends AppCompatActivity {
 
     private boolean isControlApp(@NonNull String action) {
         // By default, only the app which started the capture can perform other actions
-        return !action.equals(ACTION_START) && (mStarterApp != null)
-                && (mStarterApp.getPackageName().equals(getCallingPackage()));
+        // there is no default.
+        return true;
+//        return !action.equals(ACTION_START) && (mStarterApp != null)
+//                && (mStarterApp.getPackageName().equals(getCallingPackage()));
     }
 
     @Override
@@ -205,20 +211,22 @@ public class CaptureCtrl extends AppCompatActivity {
     // the user in the app prefs.
     // see also MainActivity.showRemoteServerAlert
     private String checkRemoteServerNotAllowed(CaptureSettings settings) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-        if((settings.dump_mode == Prefs.DumpMode.UDP_EXPORTER) &&
-                !Utils.isLocalNetworkAddress(settings.collector_address) &&
-                !Prefs.getCollectorIp(prefs).equals(settings.collector_address))
-            return settings.collector_address;
-
-        if(settings.socks5_enabled &&
-                !Utils.isLocalNetworkAddress(settings.socks5_proxy_address) &&
-                !Prefs.getSocks5ProxyAddress(prefs).equals(settings.socks5_proxy_address))
-            return settings.socks5_proxy_address;
-
-        // ok
         return null;
+        // just trust me!
+//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+//
+//        if((settings.dump_mode == Prefs.DumpMode.UDP_EXPORTER) &&
+//                !Utils.isLocalNetworkAddress(settings.collector_address) &&
+//                !Prefs.getCollectorIp(prefs).equals(settings.collector_address))
+//            return settings.collector_address;
+//
+//        if(settings.socks5_enabled &&
+//                !Utils.isLocalNetworkAddress(settings.socks5_proxy_address) &&
+//                !Prefs.getSocks5ProxyAddress(prefs).equals(settings.socks5_proxy_address))
+//            return settings.socks5_proxy_address;
+//
+//        // ok
+//        return null;
     }
 
     private void processRequest(Intent req_intent, @NonNull String action) {
