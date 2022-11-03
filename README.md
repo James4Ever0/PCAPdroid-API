@@ -1,4 +1,16 @@
-# PCAPdroid
+# PCAPdroid-API
+
+PCAPdroid-API is a modified version of [PCAPdroid](https://github.com/emanuele-f/PCAPdroid) to make capturing from adb much easier by disabling the capture dialog and the restrictions of socks proxies. To use this app after installation, things will go different from the original/stock version of PCAPdroid.
+
+Demonstration:
+
+```bash
+adb shell am start -e action start -e pcap_dump_mode udp_exporter -e collector_ip_address 127.0.0.1 -e collector_port 5123 -e app_filter com.tencent.mobileqq -n com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.CaptureCtrl
+```
+
+Note: you still need to manually click first-time dialogs and permission requests. After that, the process can be automatic. You may need to keep the screen on to ensure the target activity is launched.
+
+Original README as follows:
 
 PCAPdroid is a privacy-friendly open source app which lets you track, analyze and block the connections made by the other apps in your device. It also allows you to export a PCAP dump of the traffic, inspect HTTP, decrypt TLS traffic and much more!
 
